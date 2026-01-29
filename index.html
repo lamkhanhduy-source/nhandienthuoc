@@ -665,8 +665,15 @@
             background: #B91C1C;
         }
         /* Search Box */
-        .search-container {
-            margin-bottom: 1.5rem;
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: visible;  /* ← THAY ĐỔI từ overflow: hidden */
+            transition: all 0.3s ease;
         }
 
         .search-box {
@@ -702,16 +709,16 @@
 
         .search-results {
             position: absolute;
-            top: calc(100% + 0.5rem);
+            top: calc(100% - 1rem);  /* ← Điều chỉnh vị trí */
             left: 0;
             right: 0;
             background: white;
             border: 2px solid var(--border);
             border-radius: 12px;
-            box-shadow: var(--shadow-lg);
+            box-shadow: 0 8px 32px rgba(10, 77, 60, 0.2);  /* ← Shadow mạnh hơn */
             max-height: 400px;
             overflow-y: auto;
-            z-index: 100;
+            z-index: 1000;  /* ← z-index cao hơn */
             display: none;
         }
 
@@ -780,26 +787,29 @@
             </div>
         </div>
         <!-- Tìm kiếm thuốc -->
-        <div class="card search-container">
-            <h2 class="card-title">
-                <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                </svg>
-                Tìm kiếm thuốc
-            </h2>
-            <div class="search-box">
-                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                </svg>
-                <input 
-                    type="text" 
-                    class="search-input" 
-                    id="searchInput" 
-                    placeholder="Nhập tên thuốc để tìm kiếm... (VD: paracetamol, vitamin c, smecta)"
-                    autocomplete="off"
-                >
-                <div class="search-results" id="searchResults"></div>
+        <div style="margin-bottom: 2rem; position: relative; z-index: 100;">
+            <div class="card">
+                <h2 class="card-title">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    Tìm kiếm thuốc
+                </h2>
+                <div class="search-box">
+                    <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                    </svg>
+                    <input 
+                        type="text" 
+                        class="search-input" 
+                        id="searchInput" 
+                        placeholder="Nhập tên thuốc để tìm kiếm... (VD: paracetamol, vitamin c, smecta)"
+                        autocomplete="off"
+                    >
+                </div>
             </div>
+            <!-- Di chuyển search-results RA NGOÀI card -->
+            <div class="search-results" id="searchResults"></div>
         </div>
         <div class="main-grid">
             <div class="card">
