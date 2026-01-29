@@ -701,6 +701,14 @@
                 sideEffects: 'Hiếm gặp: Phát ban, buồn nôn, nôn. Quá liều có thể gây tổn thương gan nghiêm trọng.',
                 warnings: ['Không dùng quá 4000mg/ngày', 'Thận trọng với người bệnh gan', 'Tránh dùng với rượu']
             },
+            'efferalgan': {
+                name: 'Efferalgan (Paracetamol)',
+                use: 'Giảm đau, hạ sốt nhanh. Dạng sủi bọt giúp hấp thu nhanh hơn viên nén thông thường.',
+                dosage: 'Người lớn: 1-2 viên sủi 500mg, cách 4-6 giờ. Tối đa 8 viên/ngày. Hòa tan vào nước trước khi uống.',
+                contraindications: 'Mẫn cảm với paracetamol, suy gan, suy thận nặng, thiếu men G6PD.',
+                sideEffects: 'Hiếm gặp: phát ban da, buồn nôn, tổn thương gan nếu quá liều.',
+                warnings: ['Chứa natri - thận trọng với người hạn chế muối', 'Không vượt liều 4000mg/ngày']
+            },
             'amoxicillin': {
                 name: 'Amoxicillin',
                 use: 'Kháng sinh nhóm penicillin, điều trị nhiễm khuẩn đường hô hấp, tai mũi họng, da, niệu sinh dục.',
@@ -708,6 +716,14 @@
                 contraindications: 'Dị ứng với penicillin hoặc beta-lactam, tiền sử phản vệ với kháng sinh này.',
                 sideEffects: 'Tiêu chảy, buồn nôn, phát ban, nôn, nhiễm nấm âm đạo. Hiếm: phản ứng dị ứng nghiêm trọng.',
                 warnings: ['Dùng đủ liều trình', 'Ngừng ngay nếu có phát ban', 'Thông báo bác sĩ nếu dị ứng penicillin']
+            },
+            'augmentin': {
+                name: 'Augmentin (Amoxicillin + Clavulanic Acid)',
+                use: 'Kháng sinh phổ rộng, điều trị nhiễm khuẩn đường hô hấp, tai mũi họng, da, tiết niệu kháng amoxicillin đơn thuần.',
+                dosage: 'Người lớn: 625mg (500/125) x 3 lần/ngày hoặc 1000mg (875/125) x 2 lần/ngày. Trẻ em: Theo cân nặng.',
+                contraindications: 'Dị ứng penicillin, tiền sử vàng da do thuốc này, suy gan nặng.',
+                sideEffects: 'Tiêu chảy, buồn nôn, nôn, phát ban, nhiễm nấm. Hiếm: viêm gan, vàng da.',
+                warnings: ['Uống cùng bữa ăn giảm tác dụng phụ', 'Dùng đủ liều trình', 'Clavulanic acid có thể gây tiêu chảy']
             },
             'omeprazole': {
                 name: 'Omeprazole',
@@ -757,6 +773,14 @@
                 sideEffects: 'Buồn ngủ, mệt mỏi, khô miệng, đau đầu, chóng mặt.',
                 warnings: ['Có thể gây buồn ngủ, thận trọng khi lái xe', 'Giảm liều nếu suy thận', 'Tránh rượu']
             },
+            'loratadine': {
+                name: 'Loratadine',
+                use: 'Kháng histamin thế hệ 2, điều trị viêm mũi dị ứng, mày đay, ngứa mắt, chảy nước mũi.',
+                dosage: 'Người lớn và trẻ em > 6 tuổi: 10mg một lần/ngày. Trẻ 2-6 tuổi: 5mg/ngày.',
+                contraindications: 'Mẫn cảm với loratadine, trẻ em dưới 2 tuổi.',
+                sideEffects: 'Ít buồn ngủ hơn cetirizine. Có thể: đau đầu, mệt mỏi, khô miệng.',
+                warnings: ['Ít gây buồn ngủ', 'Uống trước bữa ăn', 'Tác dụng sau 1-3 giờ']
+            },
             'tramadol': {
                 name: 'Tramadol',
                 use: 'Giảm đau trung bình đến nặng, dùng sau phẫu thuật hoặc chấn thương.',
@@ -772,6 +796,174 @@
                 contraindications: 'Bệnh gan hoạt động, thai kỳ, cho con bú, mẫn cảm với thuốc.',
                 sideEffects: 'Đau cơ, yếu cơ, tăng men gan, táo bón, đau bụng. Hiếm: tan rã cơ (rhabdomyolysis).',
                 warnings: ['Uống vào buổi tối', 'Tránh bưởi và nước bưởi', 'Kiểm tra gan định kỳ', 'Báo ngay nếu đau cơ']
+            },
+            'tiffy': {
+                name: 'Tiffy (Paracetamol + Pseudoephedrine + Chlorpheniramine)',
+                use: 'Điều trị triệu chứng cảm cúm: sốt, đau đầu, nghẹt mũi, chảy nước mũi, hắt hơi.',
+                dosage: 'Người lớn và trẻ em > 12 tuổi: 1-2 viên x 3-4 lần/ngày. Tối đa 8 viên/ngày.',
+                contraindications: 'Tăng huyết áp nặng, bệnh tim mạch, tuyến giáp, đang dùng MAOI, trẻ em < 12 tuổi.',
+                sideEffects: 'Buồn ngủ, khô miệng, lo lắng, mất ngủ, tim đập nhanh, khó tiểu tiện.',
+                warnings: ['Gây buồn ngủ - không lái xe', 'Không dùng > 7 ngày', 'Tránh rượu', 'Uống nhiều nước']
+            },
+            'actifed': {
+                name: 'Actifed (Pseudoephedrine + Triprolidine)',
+                use: 'Giảm nghẹt mũi, chảy nước mũi, hắt hơi do cảm lạnh, viêm mũi dị ứng.',
+                dosage: 'Người lớn: 1 viên x 3-4 lần/ngày. Trẻ em 6-12 tuổi: 1/2 viên x 3-4 lần/ngày.',
+                contraindications: 'Tăng huyết áp không kiểm soát, bệnh mạch vành nặng, đang dùng MAOI.',
+                sideEffects: 'Buồn ngủ, khó ngủ, tim đập nhanh, khô miệng, lo lắng, chóng mặt.',
+                warnings: ['Gây buồn ngủ', 'Thận trọng với người tăng huyết áp', 'Không dùng kéo dài']
+            },
+            'strepsils': {
+                name: 'Strepsils (Amylmetacresol + Dichlorobenzyl Alcohol)',
+                use: 'Kháng khuẩn tại chỗ, giảm đau, kháng viêm họng, viêm amidan, nhiễm trùng miệng.',
+                dosage: 'Người lớn và trẻ em > 6 tuổi: Ngậm 1 viên, cách 2-3 giờ. Tối đa 12 viên/ngày.',
+                contraindications: 'Mẫn cảm với thành phần thuốc.',
+                sideEffects: 'Hiếm gặp: kích ứng miệng, buồn nôn.',
+                warnings: ['Ngậm tan, không nhai', 'Không ăn uống ngay sau khi ngậm', 'Dùng tối đa 3 ngày']
+            },
+            'tantum verde': {
+                name: 'Tantum Verde (Benzydamine)',
+                use: 'Chống viêm, giảm đau họng, viêm amidan, viêm lợi, sau nhổ răng, sau phẫu thuật miệng.',
+                dosage: 'Súc miệng: 15ml x 2-3 lần/ngày. Xịt họng: 4-8 lần xịt x 1.5-3 giờ/lần.',
+                contraindications: 'Mẫn cảm với benzydamine.',
+                sideEffects: 'Tê, nóng miệng nhẹ, hiếm: phản ứng dị ứng.',
+                warnings: ['Không nuốt dung dịch súc miệng', 'Không ăn uống ngay sau khi dùng', 'Dùng tối đa 7 ngày']
+            },
+            'smecta': {
+                name: 'Smecta (Diosmectite)',
+                use: 'Điều trị tiêu chảy cấp và mạn tính, đau bụng do rối loạn tiêu hóa.',
+                dosage: 'Người lớn: 3 gói/ngày. Trẻ em < 1 tuổi: 2 gói/ngày; 1-2 tuổi: 2-4 gói/ngày; > 2 tuổi: 3 gói/ngày.',
+                contraindications: 'Tắc ruột, táo bón mạn tính, mẫn cảm với thành phần.',
+                sideEffects: 'Táo bón (hiếm), đầy hơi.',
+                warnings: ['Hòa với nước trước khi uống', 'Cách các thuốc khác 2 giờ', 'Bù nước và điện giải khi tiêu chảy']
+            },
+            'bioflora': {
+                name: 'Bioflora (Men vi sinh)',
+                use: 'Bổ sung lợi khuẩn, cân bằng hệ vi sinh đường ruột, điều trị tiêu chảy, đầy hơi, khó tiêu.',
+                dosage: 'Người lớn: 2-3 gói/ngày. Trẻ em: 1-2 gói/ngày. Uống trước hoặc trong bữa ăn.',
+                contraindications: 'Suy giảm miễn dịch nặng.',
+                sideEffects: 'Rất hiếm, an toàn.',
+                warnings: ['Bảo quản nơi khô mát', 'Không pha với nước nóng > 40°C', 'Uống cách kháng sinh 2 giờ']
+            },
+            'domperidone': {
+                name: 'Domperidone (Motilium)',
+                use: 'Chống nôn, chống buồn nôn, đầy hơi, chậm tiêu, tăng nhu động dạ dày.',
+                dosage: 'Người lớn: 10mg x 3-4 lần/ngày, trước bữa ăn 15-30 phút. Trẻ em: 0.25mg/kg x 3-4 lần/ngày.',
+                contraindications: 'U tuyến yên tiết prolactin, tắc ruột, chảy máu tiêu hóa, rối loạn nhịp tim.',
+                sideEffects: 'Đau đầu, khô miệng, tiêu chảy, buồn ngủ. Hiếm: rối loạn nhịp tim.',
+                warnings: ['Dùng liều thấp nhất, thời gian ngắn nhất', 'Thận trọng với người bệnh tim', 'Không dùng > 1 tuần']
+            },
+            'buscopan': {
+                name: 'Buscopan (Hyoscine Butylbromide)',
+                use: 'Giảm đau quặn bụng, đau do co thắt đường tiêu hóa, đường mật, tiết niệu.',
+                dosage: 'Người lớn: 10-20mg x 3-5 lần/ngày. Trẻ em > 6 tuổi: 10mg x 3 lần/ngày.',
+                contraindications: 'Tăng nhãn áp, phì đại tuyến tiền liệt, tắc ruột, megacolon.',
+                sideEffects: 'Khô miệng, nhìn mờ, tim đập nhanh, khó tiểu, táo bón.',
+                warnings: ['Gây nhìn mờ - thận trọng khi lái xe', 'Uống nhiều nước', 'Không dùng kéo dài']
+            },
+            'no spa': {
+                name: 'No-Spa (Drotaverine)',
+                use: 'Giảm đau do co thắt cơ trơn: đau bụng, đau bụng kinh, đau đường mật, tiết niệu.',
+                dosage: 'Người lớn: 40-80mg x 2-3 lần/ngày. Tối đa 240mg/ngày.',
+                contraindications: 'Suy gan, thận, tim nặng, trẻ em < 1 tuổi.',
+                sideEffects: 'Chóng mặt, buồn nôn, táo bón, mất ngủ, nhịp tim nhanh.',
+                warnings: ['Thận trọng khi lái xe', 'Giảm liều với người suy gan/thận', 'Tác dụng sau 30-60 phút']
+            },
+            'eugica': {
+                name: 'Eugica (Cao Bạch đàn + Mật ong)',
+                use: 'Giảm ho, long đờm, làm dịu họng, ho khan, ho có đờm, viêm họng.',
+                dosage: 'Người lớn và trẻ em > 6 tuổi: 10ml x 3-4 lần/ngày hoặc ngậm viên 1-2 viên x 4-6 lần/ngày.',
+                contraindications: 'Mẫn cảm với thành phần, trẻ em < 30 tháng (tinh dầu bạch đàn).',
+                sideEffects: 'Hiếm: buồn nôn, dị ứng da.',
+                warnings: ['Lắc đều trước khi dùng', 'Có thể dùng cho trẻ em', 'Dùng tối đa 7 ngày']
+            },
+            'prospan': {
+                name: 'Prospan (Cao Lá Thường Xuân)',
+                use: 'Long đờm, giảm ho có đờm, viêm phế quản cấp và mạn.',
+                dosage: 'Người lớn: 5-7.5ml x 3 lần/ngày. Trẻ em: Theo tuổi, từ 2.5-5ml x 3 lần/ngày.',
+                contraindications: 'Mẫn cảm với thành phần.',
+                sideEffects: 'Hiếm: buồn nôn, tiêu chảy, dị ứng.',
+                warnings: ['Uống sau bữa ăn', 'Lắc đều trước khi dùng', 'Uống nhiều nước', 'An toàn cho trẻ em']
+            },
+            'mucosolvan': {
+                name: 'Mucosolvan (Ambroxol)',
+                use: 'Long đờm, làm loãng đờm, điều trị ho có đờm, viêm phế quản cấp/mạn, hen phế quản.',
+                dosage: 'Người lớn: 30mg x 3 lần/ngày hoặc 75mg (dạng kéo dài) x 1 lần/ngày. Trẻ em: Theo tuổi.',
+                contraindications: 'Mẫn cảm với ambroxol, loét dạ dày tá tràng đang tiến triển.',
+                sideEffects: 'Buồn nôn, đau bụng, dị ứng da, hiếm: phản ứng quá mẫn.',
+                warnings: ['Uống nhiều nước', 'Uống sau bữa ăn', 'Tác dụng sau 30 phút', 'Thận trọng 3 tháng đầu thai kỳ']
+            },
+            'dextromethorphan': {
+                name: 'Dextromethorphan',
+                use: 'Giảm ho khan, ho không đờm, ho do kích ứng. Không dùng cho ho có đờm.',
+                dosage: 'Người lớn: 10-20mg x 3-4 lần/ngày hoặc 60mg dạng kéo dài. Trẻ em: Theo tuổi và cân nặng.',
+                contraindications: 'Đang dùng MAOI, hen phế quản, bệnh phổi tắc nghẽn mạn, trẻ em < 2 tuổi.',
+                sideEffects: 'Buồn ngủ, chóng mặt, buồn nôn, táo bón.',
+                warnings: ['Gây buồn ngủ', 'Không dùng > 7 ngày', 'Tránh rượu', 'Không dùng cho ho có đờm']
+            },
+            'salonpas': {
+                name: 'Salonpas (Dán giảm đau)',
+                use: 'Giảm đau cơ, đau khớp, đau lưng, bong gân, viêm gân, đau vai gáy, đau thần kinh.',
+                dosage: 'Dán lên vùng đau 1-2 miếng/lần. Thay mới sau 8-12 giờ. Không dùng > 2 tuần.',
+                contraindications: 'Vết thương hở, da bị kích ứng, mẫn cảm với thành phần, trẻ em < 12 tuổi.',
+                sideEffects: 'Kích ứng da, nổi ban đỏ, ngứa, nóng rát da.',
+                warnings: ['Không dán lên vết thương', 'Tránh tiếp xúc mắt', 'Rửa tay sau khi dùng', 'Ngừng nếu kích ứng']
+            },
+            'glucosamine': {
+                name: 'Glucosamine Sulfate',
+                use: 'Hỗ trợ điều trị thoái hóa khớp, đau khớp, giảm viêm khớp, bảo vệ sụn khớp.',
+                dosage: 'Người lớn: 1500mg một lần/ngày hoặc 500mg x 3 lần/ngày, dùng cùng bữa ăn.',
+                contraindications: 'Dị ứng với hải sản (nguồn gốc từ tôm cua), đái tháo đường không kiểm soát.',
+                sideEffects: 'Buồn nôn, tiêu chảy, khó tiêu, đau bụng, đau đầu.',
+                warnings: ['Cần dùng liên tục 2-3 tháng mới thấy hiệu quả', 'Thận trọng với người đái tháo đường']
+            },
+            'neurobion': {
+                name: 'Neurobion (Vitamin B1+B6+B12)',
+                use: 'Bổ sung vitamin B, điều trị đau dây thần kinh, tê bì, thoái hóa cột sống, thiếu vitamin B.',
+                dosage: 'Người lớn: 1 viên x 1-3 lần/ngày sau bữa ăn.',
+                contraindications: 'Mẫn cảm với vitamin B.',
+                sideEffects: 'Hiếm: dị ứng da, buồn nôn, tiêu chảy.',
+                warnings: ['Uống sau bữa ăn', 'An toàn khi dùng lâu dài', 'Nước tiểu có thể chuyển màu vàng']
+            },
+            'keo ong': {
+                name: 'Keo Ong (Propolis)',
+                use: 'Tăng cường miễn dịch, kháng khuẩn, chống viêm, hỗ trợ điều trị viêm họng, viêm đường hô hấp.',
+                dosage: 'Người lớn: 1-3 viên hoặc 10-30 giọt x 2-3 lần/ngày.',
+                contraindications: 'Dị ứng với mật ong, phấn hoa, sản phẩm ong.',
+                sideEffects: 'Hiếm: dị ứng da, buồn nôn.',
+                warnings: ['Thận trọng với người dị ứng', 'Có thể dùng cho trẻ em > 3 tuổi', 'Bảo quản nơi khô mát']
+            },
+            'medicated oil': {
+                name: 'Dầu Gió (Medicated Oil)',
+                use: 'Giảm đau đầu, chóng mặt, say tàu xe, đầy hơi, khó tiêu, cảm lạnh nhẹ, đau cơ.',
+                dosage: 'Xoa bóp vào thái dương, trán, gáy, bụng, vùng đau 2-3 lần/ngày.',
+                contraindications: 'Vết thương hở, da bị viêm, mắt, niêm mạc, trẻ em < 2 tuổi.',
+                sideEffects: 'Kích ứng da nhẹ, nóng rát da.',
+                warnings: ['Chỉ dùng ngoài da', 'Tránh mắt', 'Rửa tay sau khi dùng', 'Dễ cháy - tránh lửa']
+            },
+            'cao dán': {
+                name: 'Cao Dán Salonpas',
+                use: 'Giảm đau cơ xương khớp, đau lưng, viêm khớp, bong gân, đau vai gáy.',
+                dosage: 'Dán 1-2 miếng lên vùng đau. Thay mới 8-12 giờ/lần.',
+                contraindications: 'Da tổn thương, mẫn cảm, trẻ nhỏ.',
+                sideEffects: 'Kích ứng da, đỏ da, ngứa.',
+                warnings: ['Không dán lên vết thương', 'Tránh mắt', 'Ngừng nếu kích ứng']
+            },
+            'oresol': {
+                name: 'Oresol (Muối bù nước)',
+                use: 'Bù nước và điện giải khi tiêu chảy, nôn, mất nước, sốt cao, vận động nhiều.',
+                dosage: 'Người lớn: 200-400ml sau mỗi lần phân lỏng. Trẻ em: 50-100ml sau mỗi lần phân lỏng.',
+                contraindications: 'Tắc ruột, suy thận, tăng kali máu.',
+                sideEffects: 'Hiếm: buồn nôn nếu uống quá nhanh.',
+                warnings: ['Hòa 1 gói vào 200ml nước sôi để nguội', 'Uống trong 24 giờ', 'Uống từ từ']
+            },
+            'electrolyte': {
+                name: 'Nước điện giải (Electrolyte)',
+                use: 'Bù nước, điện giải, năng lượng khi mất nước do tiêu chảy, nôn, sốt, vận động.',
+                dosage: 'Uống khi khát hoặc mất nước. Người lớn: 500ml-1L/ngày. Trẻ em: Theo nhu cầu.',
+                contraindications: 'Đái tháo đường (chứa đường), suy thận nặng.',
+                sideEffects: 'Hiếm, an toàn.',
+                warnings: ['Không thay thế nước lọc', 'Bảo quản mát', 'Uống ngay sau khi mở']
             }
         };
 
@@ -1023,5 +1215,6 @@
 </body>
 
 </html>
+
 
 
