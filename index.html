@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MediScan - Nhận Diện Thuốc Thông Minh</title>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4.1.1/dist/tesseract.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #0A4D3C;
+            --primary-light: #0D6B4F;
+            --secondary: #E8965F;
+            --accent: #D4AF37;
+            --bg-primary: #FDFBF7;
+            --bg-secondary: #F5F1E8;
+            --text-primary: #1A1A1A;
+            --text-secondary: #4A4A4A;
+            --border: #D4C5B0;
+            --success: #2D7A4F;
+            --warning: #D97706;
+            --danger: #DC2626;
+            --shadow-sm: 0 2px 8px rgba(10, 77, 60, 0.08);
+            --shadow-md: 0 4px 16px rgba(10, 77, 60, 0.12);
+            --shadow-lg: 0 8px 32px rgba(10, 77, 60, 0.16);
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: linear-gradient(135deg, #FDFBF7 0%, #F5F1E8 100%);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Decorative background elements */
+        body::before {
+            content: '';
+            position: fixed;
+            top: -50%;
+            right: -20%;
+            width: 70%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.05) 0%, transparent 70%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            bottom: -30%;
+            left: -10%;
+            width: 50%;
+            height: 60%;
+            background: radial-gradient(circle, rgba(10, 77, 60, 0.04) 0%, transparent 70%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        h1 {
+            font-family: 'Libre Baskerville', serif;
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+            position: relative;
+            display: inline-block;
+        }
+
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--accent), transparent);
+        }
+
+        .tagline {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+            font-weight: 500;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 968px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow-md);
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .card-title {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .icon {
+            width: 28px;
+            height: 28px;
+            flex-shrink: 0;
+        }
+
+        .upload-zone {
+            border: 3px dashed var(--border);
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            background: var(--bg-secondary);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-zone::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 0;
+            height: 0;
+            background: var(--primary);
+            opacity: 0.05;
+            border-radius: 50%;
+            transition: all 0.5s ease;
+        }
+
+        .upload-zone:hover::before {
+            width: 400px;
+            height: 400px;
+        }
+
+        .upload-zone:hover {
+            border-color: var(--primary);
+            background: var(--bg-primary);
+            transform: scale(1.02);
+        }
+
+        .upload-zone.active {
+            border-color: var(--primary);
+            background: var(--bg-primary);
+            box-shadow: 0 0 0 4px rgba(10, 77, 60, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .upload-hint {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .preview-container {
+            margin-top: 1.5rem;
+            display: none;
+        }
+
+        .preview-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .image-preview {
+            width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: 12px;
+            border: 2px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.875rem 2rem;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .button:hover:not(:disabled) {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .button-secondary {
+            background: var(--secondary);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .status {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 8px;
+            display: none;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        .status.active {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .status.processing {
+            background: #FEF3C7;
+            color: #92400E;
+            border: 1px solid #FCD34D;
+        }
+
+        .status.success {
+            background: #D1FAE5;
+            color: #065F46;
+            border: 1px solid #34D399;
+        }
+
+        .status.error {
+            background: #FEE2E2;
+            color: #991B1B;
+            border: 1px solid #F87171;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid currentColor;
+            border-top-color: transparent;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .result-card {
+            background: linear-gradient(135deg, #FFFFFF 0%, #FDFBF7 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            border: 2px solid var(--accent);
+            box-shadow: var(--shadow-md);
+            display: none;
+        }
+
+        .result-card.active {
+            display: block;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        .medicine-name {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 1.75rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .info-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .info-item {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--primary);
+        }
+
+        .info-label {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .info-value {
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .warning-box {
+            background: linear-gradient(135deg, #FEF3C7 0%, #FDE68A 100%);
+            border: 2px solid var(--warning);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .warning-title {
+            font-weight: 700;
+            color: var(--warning);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .history-list {
+            list-style: none;
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .history-item {
+            background: var(--bg-primary);
+            padding: 1rem;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-item:hover {
+            background: white;
+            border-color: var(--primary);
+            transform: translateX(4px);
+        }
+
+        .history-name {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .history-time {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-secondary);
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .badge-success {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .badge-warning {
+            background: #FEF3C7;
+            color: #92400E;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            padding: 2rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .stat-value {
+            font-family: 'Libre Baskerville', serif;
+            font-size: 2rem;
+            color: var(--primary);
+            font-weight: 700;
+        }
+
+        .stat-label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏥 MediScan</h1>
+            <p class="tagline">Nhận diện thuốc thông minh - Tra cứu thông tin nhanh chóng</p>
+        </header>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-value" id="scanCount">0</div>
+                <div class="stat-label">Lần quét</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="successRate">0%</div>
+                <div class="stat-label">Độ chính xác</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="savedMeds">0</div>
+                <div class="stat-label">Thuốc đã lưu</div>
+            </div>
+        </div>
+
+        <div class="main-grid">
+            <div class="card">
+                <h2 class="card-title">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                    Quét thuốc
+                </h2>
+
+                <div class="upload-zone" id="uploadZone">
+                    <div class="upload-icon">📷</div>
+                    <div class="upload-text">Chụp hoặc tải ảnh thuốc</div>
+                    <div class="upload-hint">Hỗ trợ: JPG, PNG, JPEG (tối đa 10MB)</div>
+                    <input type="file" id="fileInput" accept="image/*" capture="environment">
+                </div>
+
+                <div class="preview-container" id="previewContainer">
+                    <img id="imagePreview" class="image-preview" alt="Preview">
+                    <div class="button-group">
+                        <button class="button" id="scanBtn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                            </svg>
+                            Nhận diện thuốc
+                        </button>
+                        <button class="button button-secondary" id="resetBtn">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                            </svg>
+                            Chọn ảnh khác
+                        </button>
+                    </div>
+                </div>
+
+                <div class="status" id="status">
+                    <div class="spinner"></div>
+                    <span id="statusText">Đang xử lý...</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    Lịch sử tra cứu
+                </h2>
+                <div id="historyContainer">
+                    <div class="empty-state">
+                        Chưa có lịch sử tra cứu
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="result-card" id="resultCard">
+            <h3 class="medicine-name" id="medicineName">Tên thuốc</h3>
+            
+            <div class="info-grid">
+                <div class="info-item">
+                    <div class="info-label">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        Công dụng
+                    </div>
+                    <div class="info-value" id="medicineUse"></div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
+                        </svg>
+                        Liều lượng
+                    </div>
+                    <div class="info-value" id="medicineDosage"></div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                        </svg>
+                        Chống chỉ định
+                    </div>
+                    <div class="info-value" id="medicineContra"></div>
+                </div>
+
+                <div class="info-item">
+                    <div class="info-label">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                        Tác dụng phụ
+                    </div>
+                    <div class="info-value" id="medicineSideEffects"></div>
+                </div>
+            </div>
+
+            <div class="warning-box" id="warningBox" style="display: none;">
+                <div class="warning-title">
+                    ⚠️ Cảnh báo tương tác thuốc
+                </div>
+                <div id="warningText"></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>Lưu ý:</strong> Thông tin chỉ mang tính chất tham khảo. Vui lòng tham khảo ý kiến bác sĩ hoặc dược sĩ trước khi sử dụng thuốc.</p>
+            <p style="margin-top: 0.5rem;">© 2026 MediScan - Công nghệ AI nhận diện thuốc</p>
+        </div>
+    </div>
+
+    <script>
+        // Cơ sở dữ liệu thuốc mẫu (trong thực tế nên dùng API hoặc database thật)
+        const medicineDatabase = {
+            'paracetamol': {
+                name: 'Paracetamol',
+                use: 'Giảm đau, hạ sốt. Sử dụng cho các trường hợp đau nhẹ đến trung bình như đau đầu, đau răng, đau cơ, sốt do cảm cúm.',
+                dosage: 'Người lớn: 500-1000mg mỗi lần, cách 4-6 giờ. Tối đa 4000mg/ngày. Trẻ em: Tính theo cân nặng 10-15mg/kg/lần.',
+                contraindications: 'Người mẫn cảm với paracetamol, bệnh gan nặng, suy gan cấp, nghiện rượu mạn tính.',
+                sideEffects: 'Hiếm gặp: Phát ban, buồn nôn, nôn. Quá liều có thể gây tổn thương gan nghiêm trọng.',
+                warnings: ['Không dùng quá 4000mg/ngày', 'Thận trọng với người bệnh gan', 'Tránh dùng với rượu']
+            },
+            'amoxicillin': {
+                name: 'Amoxicillin',
+                use: 'Kháng sinh nhóm penicillin, điều trị nhiễm khuẩn đường hô hấp, tai mũi họng, da, niệu sinh dục.',
+                dosage: 'Người lớn: 250-500mg mỗi 8 giờ hoặc 500-875mg mỗi 12 giờ. Trẻ em: 20-40mg/kg/ngày chia 3 lần.',
+                contraindications: 'Dị ứng với penicillin hoặc beta-lactam, tiền sử phản vệ với kháng sinh này.',
+                sideEffects: 'Tiêu chảy, buồn nôn, phát ban, nôn, nhiễm nấm âm đạo. Hiếm: phản ứng dị ứng nghiêm trọng.',
+                warnings: ['Dùng đủ liều trình', 'Ngừng ngay nếu có phát ban', 'Thông báo bác sĩ nếu dị ứng penicillin']
+            },
+            'omeprazole': {
+                name: 'Omeprazole',
+                use: 'Điều trị loét dạ dày tá tràng, trào ngược dạ dày thực quản, hội chứng Zollinger-Ellison.',
+                dosage: 'Người lớn: 20-40mg một lần/ngày, uống trước bữa ăn 30-60 phút. Điều trị 4-8 tuần.',
+                contraindications: 'Mẫn cảm với omeprazole hoặc các thuốc ức chế bơm proton khác.',
+                sideEffects: 'Đau đầu, tiêu chảy, buồn nôn, đau bụng, táo bón, đầy hơi. Hiếm: giảm magiê máu, giảm vitamin B12.',
+                warnings: ['Dùng dài hạn tăng nguy cơ gãy xương', 'Có thể ảnh hưởng hấp thu vitamin B12', 'Tương tác nhiều loại thuốc']
+            },
+            'ibuprofen': {
+                name: 'Ibuprofen',
+                use: 'Giảm đau, hạ sốt, chống viêm. Dùng cho đau đầu, đau răng, đau cơ, viêm khớp, đau bụng kinh.',
+                dosage: 'Người lớn: 200-400mg mỗi 4-6 giờ. Tối đa 1200mg/ngày (không theo toa). Trẻ em: 5-10mg/kg/lần.',
+                contraindications: 'Loét dạ dày, hen phế quản do aspirin, bệnh thận nặng, thai kỳ 3 tháng cuối.',
+                sideEffects: 'Đau bụng, buồn nôn, loét dạ dày, chảy máu tiêu hóa, tăng huyết áp, suy thận.',
+                warnings: ['Uống sau khi ăn', 'Tránh dùng lâu dài', 'Nguy cơ tim mạch nếu dùng kéo dài']
+            },
+            'vitamin c': {
+                name: 'Vitamin C (Acid Ascorbic)',
+                use: 'Bổ sung vitamin C, tăng cường miễn dịch, phòng ngừa và hỗ trợ điều trị cảm lạnh, scorbut.',
+                dosage: 'Người lớn: 75-90mg/ngày (RDA). Điều trị: 100-500mg/ngày. Trẻ em: 15-75mg/ngày tùy tuổi.',
+                contraindications: 'Sỏi thận oxalat, bệnh tăng sắt, bệnh thiếu G6PD.',
+                sideEffects: 'Liều cao: tiêu chảy, buồn nôn, đau bụng, tăng nguy cơ sỏi thận.',
+                warnings: ['Không vượt quá 2000mg/ngày', 'Ngừng trước phẫu thuật 2 tuần', 'Tương tác với thuốc chống đông máu']
+            },
+            'aspirin': {
+                name: 'Aspirin (Acid Acetylsalicylic)',
+                use: 'Giảm đau, hạ sốt, chống viêm, ngăn ngừa huyết khối. Dùng phòng ngừa nhồi máu cơ tim, đột quỵ.',
+                dosage: 'Giảm đau/hạ sốt: 325-650mg mỗi 4-6 giờ. Chống đông: 75-100mg/ngày.',
+                contraindications: 'Loét dạ dày, rối loạn đông máu, hen phế quản, trẻ em dưới 12 tuổi (nguy cơ Reye).',
+                sideEffects: 'Chảy máu dạ dày, loét, ù tai, dị ứng, hen phế quản.',
+                warnings: ['Uống sau khi ăn', 'Không cho trẻ em khi sốt', 'Ngừng trước phẫu thuật']
+            },
+            'metformin': {
+                name: 'Metformin',
+                use: 'Điều trị đái tháo đường type 2, hội chứng buồng trứng đa nang (PCOS).',
+                dosage: 'Người lớn: Bắt đầu 500mg x 1-2 lần/ngày, tăng dần. Tối đa 2000-2550mg/ngày chia làm 2-3 lần.',
+                contraindications: 'Suy thận nặng (eGFR < 30), nhiễm toan chuyển hóa, suy tim nặng, sốc, nhiễm trùng nặng.',
+                sideEffects: 'Tiêu chảy, buồn nôn, đau bụng, đầy hơi. Hiếm: nhiễm toan lactic (nguy hiểm), thiếu vitamin B12.',
+                warnings: ['Uống cùng bữa ăn', 'Ngừng trước phẫu thuật, chụp CT có thuốc cản quang', 'Kiểm tra chức năng thận định kỳ']
+            },
+            'cetirizine': {
+                name: 'Cetirizine',
+                use: 'Thuốc kháng histamin, điều trị viêm mũi dị ứng, mày đay, ngứa, dị ứng da.',
+                dosage: 'Người lớn và trẻ em > 6 tuổi: 10mg một lần/ngày. Trẻ 2-6 tuổi: 2.5-5mg/ngày.',
+                contraindications: 'Mẫn cảm với cetirizine hoặc hydroxyzine, suy thận nặng.',
+                sideEffects: 'Buồn ngủ, mệt mỏi, khô miệng, đau đầu, chóng mặt.',
+                warnings: ['Có thể gây buồn ngủ, thận trọng khi lái xe', 'Giảm liều nếu suy thận', 'Tránh rượu']
+            },
+            'tramadol': {
+                name: 'Tramadol',
+                use: 'Giảm đau trung bình đến nặng, dùng sau phẫu thuật hoặc chấn thương.',
+                dosage: 'Người lớn: 50-100mg mỗi 4-6 giờ. Tối đa 400mg/ngày. Dạng kéo dài: 100-300mg/ngày.',
+                contraindications: 'Suy hô hấp nặng, nghiện rượu cấp, đang dùng MAOI, động kinh không kiểm soát.',
+                sideEffects: 'Buồn nôn, nôn, chóng mặt, buồn ngủ, táo bón, đổ mồ hôi. Nguy cơ: nghiện, phụ thuộc.',
+                warnings: ['Thuốc gây nghiện - dùng theo chỉ định', 'Không lái xe', 'Tránh rượu', 'Có thể gây co giật']
+            },
+            'simvastatin': {
+                name: 'Simvastatin',
+                use: 'Hạ cholesterol, triglyceride, phòng ngừa bệnh tim mạch, đột quỵ.',
+                dosage: 'Người lớn: 10-40mg một lần/ngày vào buổi tối. Tối đa 80mg/ngày (ít dùng do tác dụng phụ).',
+                contraindications: 'Bệnh gan hoạt động, thai kỳ, cho con bú, mẫn cảm với thuốc.',
+                sideEffects: 'Đau cơ, yếu cơ, tăng men gan, táo bón, đau bụng. Hiếm: tan rã cơ (rhabdomyolysis).',
+                warnings: ['Uống vào buổi tối', 'Tránh bưởi và nước bưởi', 'Kiểm tra gan định kỳ', 'Báo ngay nếu đau cơ']
+            }
+        };
+
+        // Biến global
+        let selectedImage = null;
+        let scanHistory = [];
+        let totalScans = 0;
+        let successfulScans = 0;
+
+        // Elements
+        const uploadZone = document.getElementById('uploadZone');
+        const fileInput = document.getElementById('fileInput');
+        const previewContainer = document.getElementById('previewContainer');
+        const imagePreview = document.getElementById('imagePreview');
+        const scanBtn = document.getElementById('scanBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const status = document.getElementById('status');
+        const statusText = document.getElementById('statusText');
+        const resultCard = document.getElementById('resultCard');
+
+        // Load history từ localStorage
+        function loadHistory() {
+            const saved = localStorage.getItem('mediScanHistory');
+            if (saved) {
+                scanHistory = JSON.parse(saved);
+                updateHistoryDisplay();
+                updateStats();
+            }
+        }
+
+        function saveHistory() {
+            localStorage.setItem('mediScanHistory', JSON.stringify(scanHistory));
+        }
+
+        // Upload zone events
+        uploadZone.addEventListener('click', () => fileInput.click());
+
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('active');
+        });
+
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('active');
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('active');
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                handleImageSelect(file);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                handleImageSelect(file);
+            }
+        });
+
+        function handleImageSelect(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                selectedImage = e.target.result;
+                imagePreview.src = selectedImage;
+                previewContainer.classList.add('active');
+                resultCard.classList.remove('active');
+                status.classList.remove('active');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Scan button
+        scanBtn.addEventListener('click', async () => {
+            if (!selectedImage) return;
+
+            totalScans++;
+            showStatus('processing', 'Đang nhận diện văn bản từ hình ảnh...');
+            scanBtn.disabled = true;
+
+            try {
+                // Sử dụng Tesseract OCR
+                const result = await Tesseract.recognize(selectedImage, 'vie+eng', {
+                    logger: m => {
+                        if (m.status === 'recognizing text') {
+                            const progress = Math.round(m.progress * 100);
+                            showStatus('processing', `Đang xử lý... ${progress}%`);
+                        }
+                    }
+                });
+
+                const recognizedText = result.data.text.toLowerCase();
+                console.log('Văn bản nhận diện:', recognizedText);
+
+                // Tìm kiếm thuốc trong database
+                let foundMedicine = null;
+                for (const [key, medicine] of Object.entries(medicineDatabase)) {
+                    if (recognizedText.includes(key) || recognizedText.includes(medicine.name.toLowerCase())) {
+                        foundMedicine = medicine;
+                        break;
+                    }
+                }
+
+                if (foundMedicine) {
+                    successfulScans++;
+                    showMedicineInfo(foundMedicine);
+                    addToHistory(foundMedicine);
+                    showStatus('success', '✓ Nhận diện thành công!');
+                    setTimeout(() => status.classList.remove('active'), 3000);
+                } else {
+                    // Thử tìm kiếm gần đúng
+                    const keywords = ['paracetamol', 'amoxicillin', 'vitamin', 'ibuprofen', 'aspirin'];
+                    let found = false;
+                    for (const keyword of keywords) {
+                        if (recognizedText.includes(keyword.substring(0, 4))) {
+                            foundMedicine = medicineDatabase[keyword];
+                            if (foundMedicine) {
+                                successfulScans++;
+                                showMedicineInfo(foundMedicine);
+                                addToHistory(foundMedicine);
+                                showStatus('success', '✓ Nhận diện thành công (gần đúng)!');
+                                setTimeout(() => status.classList.remove('active'), 3000);
+                                found = true;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    if (!found) {
+                        showStatus('error', '⚠ Không tìm thấy thông tin thuốc. Vui lòng thử lại với ảnh rõ hơn hoặc tra cứu thủ công.');
+                    }
+                }
+
+                updateStats();
+
+            } catch (error) {
+                console.error('Lỗi OCR:', error);
+                showStatus('error', '❌ Lỗi xử lý ảnh. Vui lòng thử lại.');
+            } finally {
+                scanBtn.disabled = false;
+            }
+        });
+
+        resetBtn.addEventListener('click', () => {
+            selectedImage = null;
+            fileInput.value = '';
+            previewContainer.classList.remove('active');
+            resultCard.classList.remove('active');
+            status.classList.remove('active');
+        });
+
+        function showStatus(type, message) {
+            status.className = `status active ${type}`;
+            statusText.textContent = message;
+        }
+
+        function showMedicineInfo(medicine) {
+            document.getElementById('medicineName').textContent = medicine.name;
+            document.getElementById('medicineUse').textContent = medicine.use;
+            document.getElementById('medicineDosage').textContent = medicine.dosage;
+            document.getElementById('medicineContra').textContent = medicine.contraindications;
+            document.getElementById('medicineSideEffects').textContent = medicine.sideEffects;
+
+            // Hiển thị cảnh báo nếu có
+            const warningBox = document.getElementById('warningBox');
+            const warningText = document.getElementById('warningText');
+            if (medicine.warnings && medicine.warnings.length > 0) {
+                warningText.innerHTML = medicine.warnings.map(w => `• ${w}`).join('<br>');
+                warningBox.style.display = 'block';
+            } else {
+                warningBox.style.display = 'none';
+            }
+
+            resultCard.classList.add('active');
+            resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function addToHistory(medicine) {
+            const historyItem = {
+                name: medicine.name,
+                timestamp: new Date().toLocaleString('vi-VN'),
+                data: medicine
+            };
+
+            // Thêm vào đầu mảng
+            scanHistory.unshift(historyItem);
+
+            // Giới hạn 10 items
+            if (scanHistory.length > 10) {
+                scanHistory = scanHistory.slice(0, 10);
+            }
+
+            saveHistory();
+            updateHistoryDisplay();
+        }
+
+        function updateHistoryDisplay() {
+            const container = document.getElementById('historyContainer');
+            
+            if (scanHistory.length === 0) {
+                container.innerHTML = '<div class="empty-state">Chưa có lịch sử tra cứu</div>';
+                return;
+            }
+
+            const listHTML = `
+                <ul class="history-list">
+                    ${scanHistory.map((item, index) => `
+                        <li class="history-item" onclick="showHistoryItem(${index})">
+                            <div>
+                                <div class="history-name">${item.name}</div>
+                                <div class="history-time">${item.timestamp}</div>
+                            </div>
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                            </svg>
+                        </li>
+                    `).join('')}
+                </ul>
+            `;
+
+            container.innerHTML = listHTML;
+        }
+
+        window.showHistoryItem = function(index) {
+            const item = scanHistory[index];
+            showMedicineInfo(item.data);
+        };
+
+        function updateStats() {
+            document.getElementById('scanCount').textContent = totalScans;
+            document.getElementById('successRate').textContent = 
+                totalScans > 0 ? Math.round((successfulScans / totalScans) * 100) + '%' : '0%';
+            document.getElementById('savedMeds').textContent = scanHistory.length;
+        }
+
+        // Load dữ liệu khi trang được tải
+        loadHistory();
+
+        // Animation khi load trang
+        document.addEventListener('DOMContentLoaded', () => {
+            const cards = document.querySelectorAll('.card, .stat-card');
+            cards.forEach((card, index) => {
+                card.style.animation = `fadeInDown 0.6s ease-out ${index * 0.1}s both`;
+            });
+        });
+    </script>
+</body>
+</html>
